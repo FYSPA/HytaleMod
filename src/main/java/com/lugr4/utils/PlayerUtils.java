@@ -4,41 +4,46 @@ import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
-import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class PlayerUtils {
 
+    /**
+     * Obtiene la entidad Player online usando la arquitectura oficial:
+     * Universe -> PlayerRef -> EntityRef -> Store -> Player Component
+     */
     @Nullable
     public static Player getOnlinePlayer(String name) {
         // 1. Obtenemos el Universo
         Universe universe = Universe.get();
 
-        // 2. Buscamos la referencia (rápido y seguro para obtener el UUID)
-        PlayerRef ref = universe.getPlayerByUsername(name, NameMatching.EXACT_IGNORE_CASE);
+        // 2. Buscamos el PlayerRef (La sesión del jugador)
+        // Usamos la estrategia EXACT_IGNORE_CASE como indica la documentación
+        PlayerRef playerRef = universe.getPlayerByUsername(name, NameMatching.EXACT_IGNORE_CASE);
 
-        if (ref != null && ref.isValid()) {
-            UUID targetUuid = ref.getUuid();
-
-            // === AQUÍ ESTÁ LA CORRECCIÓN ===
-
-            // CORRECCIÓN 1: Si getWorlds() no existe, usamos getWorldMap().values()
-            // Esto nos da la colección de mundos cargados.
-            for (World world : universe.getWorldMap().values()) {
-
-                // CORRECCIÓN 2: Si getPlayers() no existe, usamos getEntities(Clase)
-                // Esto filtra todas las entidades del mundo y nos da solo los Jugadores.
-                for (Player p : world.getEntities(Player.class)) {
-
-                    // Comparamos UUIDs para estar 100% seguros
-                    if (p.getUuid().equals(targetUuid)) {
-                        return p; // ¡Encontrado!
-                    }
-                }
-            }
+        if (playerRef == null) {
+            return null; // El jugador no existe o no está conectado
         }
+
+        // 3. Obtenemos la referencia a la entidad en el mundo (ECS Reference)
+        Ref<EntityStore> entityRef = playerRef.getReference();
+
+        // 4. Verificamos si la referencia es válida (si está spawneado en un mundo)
+        if (entityRef != null && entityRef.isValid()) {
+            // 5. Obtenemos el "Store" (La bolsa de componentes de esa entidad)
+            Store<EntityStore> store = entityRef.getStore();
+
+            // 6. Extraemos el componente "Player" usando su tipo
+            // ESTA ES LA LÍNEA CLAVE QUE FALTABA SEGÚN LA DOCS
+            Player player = store.getComponent(entityRef, Player.getComponentType());
+
+            return player;
+        }
+
         return null;
     }
 }

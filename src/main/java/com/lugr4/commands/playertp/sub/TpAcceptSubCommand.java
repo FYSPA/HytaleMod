@@ -5,13 +5,15 @@ import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.lugr4.managers.TpaManager;
+import com.lugr4.utils.PlayerUtils; // <--- USAMOS TU UTILIDAD
 
-// Imports de FancyCore para mover al jugador
+// Imports de movimiento
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.component.Component; // Para el cast final
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -26,10 +28,9 @@ public class TpAcceptSubCommand extends AbstractCommand {
     protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
         if (!(context.sender() instanceof Player)) return CompletableFuture.completedFuture(null);
 
-        Player acceptor = (Player) context.sender(); // El que acepta (Destino)
+        Player acceptor = (Player) context.sender();
         String acceptorName = acceptor.getDisplayName();
 
-        // Verificar si tiene solicitudes
         if (!TpaManager.getInstance().hasRequest(acceptorName)) {
             acceptor.sendMessage(Message.raw("§cNo tienes ninguna solicitud pendiente."));
             return CompletableFuture.completedFuture(null);
@@ -37,14 +38,8 @@ public class TpAcceptSubCommand extends AbstractCommand {
 
         String requesterName = TpaManager.getInstance().getRequester(acceptorName);
 
-        // Buscar al que pidió el TP (Requester)
-        Player requester = null;
-        for (Player p : acceptor.getWorld().getName()) {
-            if (p.getDisplayName().equalsIgnoreCase(requesterName)) {
-                requester = p;
-                break;
-            }
-        }
+        // === CORRECCIÓN: Buscar al solicitante con PlayerUtils ===
+        Player requester = PlayerUtils.getOnlinePlayer(requesterName);
 
         if (requester == null) {
             acceptor.sendMessage(Message.raw("§cEl jugador " + requesterName + " ya no está conectado."));
@@ -52,16 +47,13 @@ public class TpAcceptSubCommand extends AbstractCommand {
             return CompletableFuture.completedFuture(null);
         }
 
-        // === INICIO DEL TELETRANSPORTE ===
-        // Movemos al REQUESTER hacia el ACCEPTOR
-
+        // Variables finales para la lambda
         Player finalRequester = requester;
         Player finalAcceptor = acceptor;
 
-        // Ejecutamos en el mundo
         acceptor.getWorld().execute(() -> {
             try {
-                // 1. Obtener la posición del que ACEPTA (Destino)
+                // 1. Obtener posición del destino (Acceptor)
                 var acceptorRef = finalAcceptor.getReference();
                 var acceptorStore = acceptorRef.getStore();
 
@@ -70,28 +62,30 @@ public class TpAcceptSubCommand extends AbstractCommand {
 
                 if (accTrans == null) return;
 
-                // Rotación: Usamos la del destino o identidad
-                var destRot = (accRot != null) ? accRot.getRotation() : new com.hypixel.hytale.math.vector.Quaternionf(0,0,0,1);
+                // 2. Obtener la rotación existente para no usar Quaternionf manual
+                var destRot = (accRot != null) ? accRot.getRotation() : null;
 
-                // 2. Preparar el componente Teleport para el que SOLICITÓ
+                // 3. Preparar Teleport
                 var reqRef = finalRequester.getReference();
                 var reqStore = reqRef.getStore();
 
-                Transform destinationTransform = new Transform(
-                        accTrans.getPosition(), // Posición del destino
-                        destRot                 // Rotación del destino
-                );
+                // Usamos el constructor inteligente (si hay rotación la usa, si no, usa solo posición)
+                Transform destinationTransform;
+                if (destRot != null) {
+                    destinationTransform = new Transform(accTrans.getPosition(), destRot);
+                } else {
+                    destinationTransform = new Transform(accTrans.getPosition());
+                }
 
                 Teleport teleport = new Teleport(finalAcceptor.getWorld(), destinationTransform);
 
-                // 3. Aplicar teleport al solicitante
-                reqStore.addComponent(reqRef, Teleport.getComponentType(), teleport);
+                // 4. Aplicar (con el cast a Component para evitar error de bounds)
+                ((com.hypixel.hytale.component.Store) reqStore).addComponent(reqRef, Teleport.getComponentType(), (Component) teleport);
 
                 // Mensajes
                 finalRequester.sendMessage(Message.raw("§aSolicitud aceptada. Teletransportando..."));
                 finalAcceptor.sendMessage(Message.raw("§aHas aceptado a " + requesterName));
 
-                // Limpiar solicitud
                 TpaManager.getInstance().removeRequest(acceptorName);
 
             } catch (Exception e) {

@@ -5,6 +5,7 @@ import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.lugr4.managers.TpaManager;
+import com.lugr4.utils.PlayerUtils; // <--- USAMOS TU UTILIDAD
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -28,12 +29,11 @@ public class TpDenySubCommand extends AbstractCommand {
 
         String requesterName = TpaManager.getInstance().getRequester(acceptorName);
 
-        // Avisar al que pidió (si sigue online)
-        for (Player p : acceptor.getWorld().getPlayers()) {
-            if (p.getDisplayName().equalsIgnoreCase(requesterName)) {
-                p.sendMessage(Message.raw("§c" + acceptorName + " rechazó tu solicitud de teletransporte."));
-                break;
-            }
+        // === CORRECCIÓN: Avisar al solicitante si sigue online ===
+        Player requester = PlayerUtils.getOnlinePlayer(requesterName);
+
+        if (requester != null) {
+            requester.sendMessage(Message.raw("§c" + acceptorName + " rechazó tu solicitud."));
         }
 
         acceptor.sendMessage(Message.raw("§eHas rechazado la solicitud de " + requesterName));
