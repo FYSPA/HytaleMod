@@ -8,12 +8,11 @@ public class TpaManager {
     public static TpaManager getInstance() { return instance; }
 
     // Mapa: <NombreDestino, NombreSolicitante>
-    // Ejemplo: Luis recibe solicitud de Pedro -> <"Luis", "Pedro">
+    // Guardamos los nombres reales (Username) para evitar errores con colores o nicks
     private final Map<String, String> pendingRequests = new HashMap<>();
 
     public void createRequest(String senderName, String targetName) {
         pendingRequests.put(targetName, senderName);
-        // Aquí podrías añadir un Timer para que expire en 60 segundos
     }
 
     public String getRequester(String targetName) {

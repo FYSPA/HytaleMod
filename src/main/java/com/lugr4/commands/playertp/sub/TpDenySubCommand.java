@@ -4,8 +4,9 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.lugr4.managers.TpaManager;
-import com.lugr4.utils.PlayerUtils; // <--- USAMOS TU UTILIDAD
+import com.lugr4.utils.PlayerUtils;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -13,13 +14,15 @@ import java.util.concurrent.CompletableFuture;
 public class TpDenySubCommand extends AbstractCommand {
 
     public TpDenySubCommand() {
-        super("tpdeny", "Rechaza una solicitud de teletransporte");
+        super("deny", "Rechaza una solicitud de TPA");
     }
 
     @Override
     protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
         if (!(context.sender() instanceof Player)) return CompletableFuture.completedFuture(null);
+
         Player acceptor = (Player) context.sender();
+        // CAMBIO: getName() -> getDisplayName()
         String acceptorName = acceptor.getDisplayName();
 
         if (!TpaManager.getInstance().hasRequest(acceptorName)) {
@@ -28,12 +31,10 @@ public class TpDenySubCommand extends AbstractCommand {
         }
 
         String requesterName = TpaManager.getInstance().getRequester(acceptorName);
+        PlayerRef requesterRef = PlayerUtils.getOnlinePlayer(requesterName);
 
-        // === CORRECCIÓN: Avisar al solicitante si sigue online ===
-        Player requester = PlayerUtils.getOnlinePlayer(requesterName);
-
-        if (requester != null) {
-            requester.sendMessage(Message.raw("§c" + acceptorName + " rechazó tu solicitud."));
+        if (requesterRef != null) {
+            requesterRef.sendMessage(Message.raw("§c" + acceptorName + " ha rechazado tu solicitud."));
         }
 
         acceptor.sendMessage(Message.raw("§eHas rechazado la solicitud de " + requesterName));

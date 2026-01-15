@@ -1,4 +1,4 @@
-package com.lugr4.commands;
+package com.lugr4.commands.utils;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
