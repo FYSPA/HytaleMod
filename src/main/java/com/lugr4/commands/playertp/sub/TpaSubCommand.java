@@ -25,24 +25,23 @@ public class TpaSubCommand extends AbstractCommand {
     @Override
     protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
         if (!(context.sender() instanceof Player)) {
-            context.sender().sendMessage(Message.raw("§cLa consola no puede pedir TPA."));
+            context.sender().sendMessage(Message.raw("La consola no puede pedir TPA."));
             return CompletableFuture.completedFuture(null);
         }
 
         Player sender = (Player) context.sender();
         String targetName = targetArg.get(context);
 
-        // CAMBIO: getName() -> getDisplayName()
-//        if (targetName.equalsIgnoreCase(sender.getDisplayName())) {
-//            sender.sendMessage(Message.raw("§cNo puedes enviarte solicitud a ti mismo."));
-//            return CompletableFuture.completedFuture(null);
-//        }
+        if (targetName.equalsIgnoreCase(sender.getDisplayName())) {
+            sender.sendMessage(Message.raw("No puedes enviarte solicitud a ti mismo."));
+            return CompletableFuture.completedFuture(null);
+        }
 
         // 1. Buscamos la referencia
         PlayerRef targetRef = PlayerUtils.getOnlinePlayer(targetName);
 
         if (targetRef == null) {
-            sender.sendMessage(Message.raw("§cJugador no encontrado o desconectado."));
+            sender.sendMessage(Message.raw("Jugador no encontrado o desconectado."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -54,12 +53,12 @@ public class TpaSubCommand extends AbstractCommand {
         // 3. Enviamos mensajes
         sender.sendMessage(Message.raw("§aSolicitud enviada a " + targetRef.getUsername()));
 
-        targetRef.sendMessage(Message.raw("§6=================================="));
+        targetRef.sendMessage(Message.raw("=================================="));
         // CAMBIO: getName() -> getDisplayName()
-        targetRef.sendMessage(Message.raw("§e" + sender.getDisplayName() + " §7quiere ir hacia ti."));
-        targetRef.sendMessage(Message.raw("§7Escribe: §b/home tpaccept §7para aceptar."));
-        targetRef.sendMessage(Message.raw("§7O rechaza con: §c/home tpdeny"));
-        targetRef.sendMessage(Message.raw("§6=================================="));
+        targetRef.sendMessage(Message.raw(sender.getDisplayName() + " §7quiere ir hacia ti."));
+        targetRef.sendMessage(Message.raw("Escribe: '/request accept' para aceptar la solicitud."));
+        targetRef.sendMessage(Message.raw("O rechaza con: '/request deny'"));
+        targetRef.sendMessage(Message.raw("=================================="));
 
         return CompletableFuture.completedFuture(null);
     }

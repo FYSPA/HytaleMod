@@ -30,5 +30,5 @@ dependencies {
 
 jar {
     // Nombre del archivo final que pondrás en la carpeta mods
-    archiveFileName = "MiPrimerMod.jar"
+    archiveFileName = "WayHomes.jar"
 }

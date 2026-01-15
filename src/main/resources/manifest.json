@@ -1,11 +1,12 @@
 {
-  "Name": "WayHome",
+  "Group": "Fyspa",
+  "Name": "WayHomes",
   "Description": "",
   "Version": "1.0.0",
   "Authors": [
     {
       "Name": "Fyspa",
-      "Email": "gravitygames813@gmail.com",
+      "Email": "fernandosuarezflores05@gmail.com",
       "Url": "https://example.com"
     }
   ],
@@ -15,5 +16,9 @@
   "Dependencies": {},
   "OptionalDependencies": {},
   "DisabledByDefault": false,
-  "Main": "com.lugr4.App"  
+  "Main": "com.lugr4.App",
+  "IncludesAssetPack": true,
+  "assets": {
+    "required": true
+  }
 }

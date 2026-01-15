@@ -32,7 +32,7 @@ public class TpAcceptSubCommand extends AbstractCommand {
         String acceptorName = acceptor.getDisplayName();
 
         if (!TpaManager.getInstance().hasRequest(acceptorName)) {
-            acceptor.sendMessage(Message.raw("§cNo tienes solicitudes pendientes."));
+            acceptor.sendMessage(Message.raw("No tienes solicitudes pendientes."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -45,8 +45,8 @@ public class TpAcceptSubCommand extends AbstractCommand {
             return CompletableFuture.completedFuture(null);
         }
 
-        acceptor.sendMessage(Message.raw("§aAceptando solicitud..."));
-        requesterRef.sendMessage(Message.raw("§a¡Solicitud aceptada! Teletransportando..."));
+        acceptor.sendMessage(Message.raw("Aceptando solicitud..."));
+        requesterRef.sendMessage(Message.raw("¡Solicitud aceptada! Teletransportando..."));
 
         // Ejecutamos en el hilo del mundo del ACEPTADOR
         acceptor.getWorld().execute(() -> {
@@ -57,7 +57,7 @@ public class TpAcceptSubCommand extends AbstractCommand {
                 TransformComponent accTrans = acceptorStore.getComponent(acceptorEntityRef, TransformComponent.getComponentType());
 
                 if (accTrans == null) {
-                    acceptor.sendMessage(Message.raw("§cError: No se pudo leer tu posición."));
+                    acceptor.sendMessage(Message.raw("Error: No se pudo leer tu posición."));
                     return;
                 }
 
@@ -81,7 +81,7 @@ public class TpAcceptSubCommand extends AbstractCommand {
                 TpaManager.getInstance().removeRequest(acceptorName);
 
             } catch (Exception e) {
-                acceptor.sendMessage(Message.raw("§cError técnico: " + e.getMessage()));
+                acceptor.sendMessage(Message.raw("Error técnico: " + e.getMessage()));
                 e.printStackTrace();
             }
         });

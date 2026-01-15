@@ -39,8 +39,28 @@ public class SetHomeSubCommand extends AbstractCommand {
         // --- CASO 2: JUGADOR REAL ---
         Player player = (Player) context.sender();
 
-        // ¡IMPORTANTE! Solución al error "Assert not in thread!"
-        // Ejecutamos la lógica dentro del hilo del mundo para poder leer los componentes con seguridad.
+        // 1. OBTENEMOS TUS DATOS ACTUALES
+        var manager = HomeManager.getInstance();
+        var allMyHomes = manager.getAllHomes().get(player.getDisplayName());
+        int currentHomes = (allMyHomes != null) ? allMyHomes.size() : 0;
+
+        // 2. USAMOS LA API DE CONFIGURACIÓN
+        // Leemos el límite desde el archivo JSON
+        int limit = com.lugr4.config.ConfigHome.get().getMaxHomes();
+
+        // 3. VERIFICAMOS EL LÍMITE
+        // Si ya tienes el máximo y no estás intentando sobrescribir una existente...
+        if (currentHomes >= limit) {
+            // Verificamos si solo está actualizando una existente (eso sí se permite)
+            boolean isUpdating = (allMyHomes != null && allMyHomes.containsKey(homeName));
+
+            if (!isUpdating) {
+                context.sender().sendMessage(Message.raw("Has alcanzado el límite de casas (" + currentHomes + "/" + limit + ")."));
+                context.sender().sendMessage(Message.raw("Borra una con /home del <nombre>"));
+                return CompletableFuture.completedFuture(null);
+            }
+        }
+
         player.getWorld().execute(() -> {
 
             // Llamamos al Manager para que lea el TransformComponent y guarde el JSON

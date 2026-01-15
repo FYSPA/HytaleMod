@@ -26,7 +26,7 @@ public class TpDenySubCommand extends AbstractCommand {
         String acceptorName = acceptor.getDisplayName();
 
         if (!TpaManager.getInstance().hasRequest(acceptorName)) {
-            acceptor.sendMessage(Message.raw("§cNo tienes solicitudes para rechazar."));
+            acceptor.sendMessage(Message.raw("No tienes solicitudes para rechazar."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -34,10 +34,10 @@ public class TpDenySubCommand extends AbstractCommand {
         PlayerRef requesterRef = PlayerUtils.getOnlinePlayer(requesterName);
 
         if (requesterRef != null) {
-            requesterRef.sendMessage(Message.raw("§c" + acceptorName + " ha rechazado tu solicitud."));
+            requesterRef.sendMessage(Message.raw(acceptorName + " ha rechazado tu solicitud."));
         }
 
-        acceptor.sendMessage(Message.raw("§eHas rechazado la solicitud de " + requesterName));
+        acceptor.sendMessage(Message.raw("Has rechazado la solicitud de " + requesterName));
         TpaManager.getInstance().removeRequest(acceptorName);
 
         return CompletableFuture.completedFuture(null);
