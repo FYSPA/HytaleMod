@@ -8,6 +8,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.lugr4.commands.HomeCommandCollection;
 import com.lugr4.commands.MarketCollection;
+import com.lugr4.commands.PositionCommand;
 
 /**
  * Clase principal del Plugin (Punto de entrada).
@@ -54,6 +55,7 @@ public class App extends JavaPlugin {
         // 3 Proceso -
         this.getCommandRegistry().registerCommand(new MarketCollection());
         this.getCommandRegistry().registerCommand(new HomeCommandCollection());
+        this.getCommandRegistry().registerCommand(new PositionCommand());
     }
     
     /**
