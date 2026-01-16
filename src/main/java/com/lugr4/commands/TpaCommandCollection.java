@@ -7,7 +7,7 @@ import com.lugr4.commands.playertp.sub.TpaSubCommand;
 
 public class TpaCommandCollection extends AbstractCommandCollection {
     public TpaCommandCollection() {
-        super("request", "Sistema de TPA");
+        super("request", "TPA System");
 
         this.addSubCommand(new TpAcceptSubCommand());
         this.addSubCommand(new TpaSubCommand());

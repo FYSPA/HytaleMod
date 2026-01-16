@@ -37,7 +37,7 @@ public class App extends JavaPlugin {
      */
     @Override
     protected void setup() {
-        getLogger().at(Level.INFO).log("Iniciando fase de SETUP para %s...", getManifest().getName());
+        getLogger().at(Level.INFO).log("Starting SETUP phase for %s...", getManifest().getName());
         // void
     }
     
@@ -52,7 +52,7 @@ public class App extends JavaPlugin {
      */
     @Override
     protected void start(){
-        getLogger().at(Level.INFO).log("Iniciando fase de START. Registrando sistemas activos...");
+        getLogger().at(Level.INFO).log("Beginning START phase. Registering active systems...");
         // 3 Proceso -
         this.getCommandRegistry().registerCommand(new MarketCollection());
         this.getCommandRegistry().registerCommand(new HomeCommandCollection());
@@ -71,7 +71,7 @@ public class App extends JavaPlugin {
      */
     @Override
     protected void shutdown(){ 
-        getLogger().at(Level.INFO).log("Ejecutando limpieza de SHUTDOWN. Guardando estado...");
+        getLogger().at(Level.INFO).log("Performing SHUTDOWN cleanup. Saving state...");
     }
 
 }

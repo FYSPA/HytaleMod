@@ -18,14 +18,14 @@ public class TpaSubCommand extends AbstractCommand {
     private final RequiredArg<String> targetArg;
 
     public TpaSubCommand() {
-        super("tpa", "Solicita teletransporte a un jugador");
-        this.targetArg = withRequiredArg("jugador", "Nombre del jugador", ArgTypes.STRING);
+        super("tpa", "Request teleportation from a player");
+        this.targetArg = withRequiredArg("jugador", "Player's name", ArgTypes.STRING);
     }
 
     @Override
     protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
         if (!(context.sender() instanceof Player)) {
-            context.sender().sendMessage(Message.raw("La consola no puede pedir TPA."));
+            context.sender().sendMessage(Message.raw("The console cannot request TPA."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -33,7 +33,7 @@ public class TpaSubCommand extends AbstractCommand {
         String targetName = targetArg.get(context);
 
         if (targetName.equalsIgnoreCase(sender.getDisplayName())) {
-            sender.sendMessage(Message.raw("No puedes enviarte solicitud a ti mismo."));
+            sender.sendMessage(Message.raw("You cannot send a request to yourself."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -41,23 +41,18 @@ public class TpaSubCommand extends AbstractCommand {
         PlayerRef targetRef = PlayerUtils.getOnlinePlayer(targetName);
 
         if (targetRef == null) {
-            sender.sendMessage(Message.raw("Jugador no encontrado o desconectado."));
+            sender.sendMessage(Message.raw("Player not found or disconnected."));
             return CompletableFuture.completedFuture(null);
         }
 
-        // 2. Guardamos la solicitud
-        // CAMBIO: getName() -> getDisplayName()
-        // Usamos getUsername() para el targetRef porque es una referencia
-        TpaManager.getInstance().createRequest(sender.getDisplayName(), targetRef.getUsername());
 
-        // 3. Enviamos mensajes
+        TpaManager.getInstance().createRequest(sender.getDisplayName(), targetRef.getUsername());
         sender.sendMessage(Message.raw("§aSolicitud enviada a " + targetRef.getUsername()));
 
         targetRef.sendMessage(Message.raw("=================================="));
-        // CAMBIO: getName() -> getDisplayName()
-        targetRef.sendMessage(Message.raw(sender.getDisplayName() + " §7quiere ir hacia ti."));
-        targetRef.sendMessage(Message.raw("Escribe: '/request accept' para aceptar la solicitud."));
-        targetRef.sendMessage(Message.raw("O rechaza con: '/request deny'"));
+        targetRef.sendMessage(Message.raw(sender.getDisplayName() + " wants to come towards you."));
+        targetRef.sendMessage(Message.raw("Type '/request accept' to accept the request."));
+        targetRef.sendMessage(Message.raw("Or reject with: '/request deny'"));
         targetRef.sendMessage(Message.raw("=================================="));
 
         return CompletableFuture.completedFuture(null);

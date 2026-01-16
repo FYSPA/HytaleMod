@@ -1,0 +1,18 @@
+$C = "../Common.ui";
+@TitleStyle = LabelStyle(FontSize: 24, TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center);
+
+Group {
+    LayoutMode: Top;
+    Padding: (Top: 30, Left: 20, Right: 20, Bottom: 20);
+    FlexWeight: 1;
+
+    Label { Text: "MIS CASAS"; Style: @TitleStyle; Anchor: (Height: 40); }
+    Group { Anchor: (Height: 20); }
+
+    // CONTENEDOR CON SCROLL
+    Group #HomeListScroll {
+        LayoutMode: TopScrolling;
+        FlexWeight: 1; // Ocupa el resto hacia abajo
+        Padding: (Right: 10); // Espacio para la barra de scroll
+    }
+}

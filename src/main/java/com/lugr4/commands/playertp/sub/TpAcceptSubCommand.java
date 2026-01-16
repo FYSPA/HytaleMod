@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public class TpAcceptSubCommand extends AbstractCommand {
 
     public TpAcceptSubCommand() {
-        super("accept", "Acepta una solicitud de TPA");
+        super("accept", "Accepts a TPA application");
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TpAcceptSubCommand extends AbstractCommand {
         String acceptorName = acceptor.getDisplayName();
 
         if (!TpaManager.getInstance().hasRequest(acceptorName)) {
-            acceptor.sendMessage(Message.raw("No tienes solicitudes pendientes."));
+            acceptor.sendMessage(Message.raw("You have no pending requests."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -40,13 +40,13 @@ public class TpAcceptSubCommand extends AbstractCommand {
         PlayerRef requesterRef = PlayerUtils.getOnlinePlayer(requesterName);
 
         if (requesterRef == null) {
-            acceptor.sendMessage(Message.raw("§c" + requesterName + " ya no está conectado."));
+            acceptor.sendMessage(Message.raw(requesterName + "It is no longer connected."));
             TpaManager.getInstance().removeRequest(acceptorName);
             return CompletableFuture.completedFuture(null);
         }
 
-        acceptor.sendMessage(Message.raw("Aceptando solicitud..."));
-        requesterRef.sendMessage(Message.raw("¡Solicitud aceptada! Teletransportando..."));
+        acceptor.sendMessage(Message.raw("Accepting request..."));
+        requesterRef.sendMessage(Message.raw("Application accepted! Teleporting..."));
 
         // Ejecutamos en el hilo del mundo del ACEPTADOR
         acceptor.getWorld().execute(() -> {
@@ -57,7 +57,7 @@ public class TpAcceptSubCommand extends AbstractCommand {
                 TransformComponent accTrans = acceptorStore.getComponent(acceptorEntityRef, TransformComponent.getComponentType());
 
                 if (accTrans == null) {
-                    acceptor.sendMessage(Message.raw("Error: No se pudo leer tu posición."));
+                    acceptor.sendMessage(Message.raw("Error: Your position could not be read."));
                     return;
                 }
 
@@ -81,7 +81,7 @@ public class TpAcceptSubCommand extends AbstractCommand {
                 TpaManager.getInstance().removeRequest(acceptorName);
 
             } catch (Exception e) {
-                acceptor.sendMessage(Message.raw("Error técnico: " + e.getMessage()));
+                acceptor.sendMessage(Message.raw("Technical error: " + e.getMessage()));
                 e.printStackTrace();
             }
         });

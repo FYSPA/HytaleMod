@@ -9,12 +9,13 @@ public class HomeCommandCollection extends AbstractCommandCollection {
 
     public HomeCommandCollection() {
 
-        super("home", "Sistema de casas");
+        super("home", "House system");
 
         this.addSubCommand(new SetHomeSubCommand());
         this.addSubCommand(new GoHomeSubCommand());
         this.addSubCommand(new ListHomeSubCommand());
         this.addSubCommand(new DelHomeSubCommand());
         this.addSubCommand(new ConfigSubCommand());
+        this.addSubCommand(new MenuCreateSubCommand());
     }
 }

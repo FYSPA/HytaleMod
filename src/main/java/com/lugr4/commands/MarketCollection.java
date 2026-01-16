@@ -6,11 +6,10 @@ import com.lugr4.commands.itemcommands.ItemCollection;
 /**
  * Clase principal que gestiona el comando raíz <code>/market</code>.
  * <p>
- * Esta clase no ejecuta lógica por sí misma, sino que actúa como un contenedor (Collection)
- * para organizar todos los subcomandos relacionados con el sistema de mercado.
+
  * </p>
  * 
- * Jerarquía de comandos:
+
  * <ul>
  *   <li>{@code /market} (Esta clase)
  *      <ul>

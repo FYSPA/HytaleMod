@@ -1,0 +1,37 @@
+@LabelStyle = LabelStyle(FontSize: 16, TextColor: #ffffff, HorizontalAlignment: Center);
+@InputStyle = InputFieldStyle(
+    FontSize: 16,
+    TextColor: #ffffff,
+);
+
+Group {
+    LayoutMode: Top;
+    Padding: (Full: 20);
+    FlexWeight: 1;
+
+    Label {
+        Text: "NUEVA CASA";
+        Style: (FontSize: 22, TextColor: #eec11a, RenderBold: true, Alignment: Center);
+    }
+
+    Group { Anchor: (Height: 30); }
+
+    Label { Text: "Escribe el nombre:"; Style: @LabelStyle; }
+
+    // CAMPO DE TEXTO
+    TextField #NameInput {
+        Style: @InputStyle;
+        Background: #222222;
+        Anchor: (Width: 300, Height: 40);
+        Padding: (Full: 10);
+    }
+
+    Group { Anchor: (Height: 20); }
+
+    TextButton #BtnSave {
+        Text: "GUARDAR POSICIÓN";
+        Anchor: (Width: 200, Height: 45);
+        Background: #228822;
+        Style: (Default: (LabelStyle: @LabelStyle));
+    }
+}

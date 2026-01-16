@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 public class TpDenySubCommand extends AbstractCommand {
 
     public TpDenySubCommand() {
-        super("deny", "Rechaza una solicitud de TPA");
+        super("deny", "Rejects a TPA application");
     }
 
     @Override
@@ -26,7 +26,7 @@ public class TpDenySubCommand extends AbstractCommand {
         String acceptorName = acceptor.getDisplayName();
 
         if (!TpaManager.getInstance().hasRequest(acceptorName)) {
-            acceptor.sendMessage(Message.raw("No tienes solicitudes para rechazar."));
+            acceptor.sendMessage(Message.raw("You have no requests to decline."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -34,10 +34,10 @@ public class TpDenySubCommand extends AbstractCommand {
         PlayerRef requesterRef = PlayerUtils.getOnlinePlayer(requesterName);
 
         if (requesterRef != null) {
-            requesterRef.sendMessage(Message.raw(acceptorName + " ha rechazado tu solicitud."));
+            requesterRef.sendMessage(Message.raw(acceptorName + " has rejected your application."));
         }
 
-        acceptor.sendMessage(Message.raw("Has rechazado la solicitud de " + requesterName));
+        acceptor.sendMessage(Message.raw("You have rejected the request to " + requesterName));
         TpaManager.getInstance().removeRequest(acceptorName);
 
         return CompletableFuture.completedFuture(null);

@@ -5,16 +5,14 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncC
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.lugr4.ui.HomeConfigGui;
-import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
+import com.lugr4.ui.HomeMenuGui;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ConfigSubCommand extends AbstractAsyncCommand {
 
     public ConfigSubCommand() {
-        super("config", "Abre el menu de configuracion visual");
+        super("config", "Open the visual settings menu");
     }
 
     @Override
@@ -25,11 +23,19 @@ public class ConfigSubCommand extends AbstractAsyncCommand {
                 var store = ref.getStore();
                 World world = store.getExternalData().getWorld();
 
-                // Abrimos la página en el hilo del mundo (World Thread)
+                // Ejecutamos en el hilo del mundo (World Thread)
                 return CompletableFuture.runAsync(() -> {
                     PlayerRef playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+
                     if (playerRef != null) {
-                        player.getPageManager().openCustomPage(ref, store, new HomeConfigGui(playerRef));
+                        // 1. Instanciamos el Menú Maestro
+                        HomeMenuGui menu = new HomeMenuGui(playerRef);
+
+                        // 2. Le decimos que muestre la configuración directamente
+                        menu.openConfigTab();
+
+                        // 3. Abrimos el menú
+                        player.getPageManager().openCustomPage(ref, store, menu);
                     }
                 }, world);
             }

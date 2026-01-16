@@ -16,9 +16,9 @@ public class SetHomeSubCommand extends AbstractCommand {
     private final RequiredArg<String> homeNameArg;
 
     public SetHomeSubCommand() {
-        super("set", "Guarda tu posición actual");
+        super("set", "Save your current position");
         // Definimos el argumento obligatorio para evitar el error "Expected 0, actual 1"
-        this.homeNameArg = withRequiredArg("nombre", "Nombre de la casa", ArgTypes.STRING);
+        this.homeNameArg = withRequiredArg("nombre", "House name", ArgTypes.STRING);
     }
 
     @Override
@@ -29,10 +29,10 @@ public class SetHomeSubCommand extends AbstractCommand {
         // Esto sirve para tus pruebas desde la terminal
         if (!(context.sender() instanceof Player)) {
             HomeManager.HomeLocation fake = new HomeManager.HomeLocation(100.0, 64.0, 100.0, "world");
-            HomeManager.getInstance().saveHome("Luis", homeName, fake);
+            HomeManager.getInstance().saveHome("Person", homeName, fake);
 
-            context.sender().sendMessage(Message.raw("§e[Docker] Casa de prueba '" + homeName + "' guardada para Luis."));
-            context.sender().sendMessage(Message.raw("§7(Coordenadas simuladas: 100, 64, 100)"));
+            context.sender().sendMessage(Message.raw("[Docker] Test House'" + homeName + "' saved for Person."));
+            context.sender().sendMessage(Message.raw("(Simulated coordinates: 100, 64, 100)"));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -55,8 +55,8 @@ public class SetHomeSubCommand extends AbstractCommand {
             boolean isUpdating = (allMyHomes != null && allMyHomes.containsKey(homeName));
 
             if (!isUpdating) {
-                context.sender().sendMessage(Message.raw("Has alcanzado el límite de casas (" + currentHomes + "/" + limit + ")."));
-                context.sender().sendMessage(Message.raw("Borra una con /home del <nombre>"));
+                context.sender().sendMessage(Message.raw("You have reached the house limit (" + currentHomes + "/" + limit + ")."));
+                context.sender().sendMessage(Message.raw("Delete one with /home del <name>"));
                 return CompletableFuture.completedFuture(null);
             }
         }
@@ -70,14 +70,14 @@ public class SetHomeSubCommand extends AbstractCommand {
                 // Recuperamos lo guardado para confirmar coordenadas exactas al usuario
                 var loc = HomeManager.getInstance().getHome(player.getDisplayName(), homeName);
 
-                context.sender().sendMessage(Message.raw("§a¡Casa '" + homeName + "' establecida con éxito!"));
+                context.sender().sendMessage(Message.raw("¡Home '" + homeName + "' Successfully established!"));
 
                 if (loc != null) {
                     String coords = String.format("X:%.1f Y:%.1f Z:%.1f", loc.x, loc.y, loc.z);
-                    context.sender().sendMessage(Message.raw("§7Ubicación: " + coords));
+                    context.sender().sendMessage(Message.raw("Location: " + coords));
                 }
             } else {
-                context.sender().sendMessage(Message.raw("§cError: No se pudo leer tu posición (TransformComponent)."));
+                context.sender().sendMessage(Message.raw("Error: Your position (TransformComponent) could not be read."));
             }
         });
 

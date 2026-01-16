@@ -1,0 +1,59 @@
+$C = "../Common.ui";
+
+@MiniBtnStyle = TextButtonStyle(
+    Default: (
+        LabelStyle: (FontSize: 12, TextColor: #ffffff, HorizontalAlignment: Center, VerticalAlignment: Center)
+    )
+);
+
+// GRUPO RAÍZ (Contenedor invisible que define el tamaño total con espacio abajo)
+Group {
+    LayoutMode: Top;
+    Anchor: (Width: 440, Height: 55); // 50 de la fila + 5 de espacio
+
+    // LA FILA VISIBLE (Tarjeta)
+    // Cambiamos $C.@Container por un Group normal
+    Group {
+        LayoutMode: Left; // Elementos uno al lado del otro
+        Anchor: (Width: 440, Height: 50);
+
+        // Fondo oscuro semitransparente para que resalte sobre tu imagen de fondo
+        Background: #263047;
+
+        Padding: (Left: 15, Right: 10, Top: 5, Bottom: 5);
+
+        // 1. Nombre de la Casa
+        Label #HomeName {
+            Text: "NombreCasa";
+            Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true, VerticalAlignment: Center);
+            FlexWeight: 1; // Ocupa el espacio disponible
+        }
+
+        // 2. Coordenadas
+        Label #HomeCoords {
+            Text: "X:0 Y:0 Z:0";
+            Style: (FontSize: 12, TextColor: #aaaaaa, VerticalAlignment: Center, HorizontalAlignment: Center);
+            Anchor: (Width: 120);
+        }
+
+        Group { Anchor: (Width: 15); } // Espaciador
+
+        // 3. Botón IR
+        TextButton #BtnTP {
+            Text: "IR";
+            Anchor: (Width: 50, Height: 30);
+            Background: #228822(0.9);
+            Style: @MiniBtnStyle;
+        }
+
+        Group { Anchor: (Width: 10); } // Espaciador
+
+        // 4. Botón Borrar
+        TextButton #BtnDel {
+            Text: "X";
+            Anchor: (Width: 30, Height: 30);
+            Background: #882222(0.9);
+            Style: @MiniBtnStyle;
+        }
+    }
+}

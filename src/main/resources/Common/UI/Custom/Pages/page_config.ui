@@ -1,0 +1,80 @@
+$C = "../Common.ui";
+
+@LabelStyle = LabelStyle(FontSize: 16, TextColor: #ffffff, RenderBold: true, VerticalAlignment: Center);
+@ValueStyle = LabelStyle(FontSize: 16, TextColor: #aaaaff, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center);
+@TitleStyle = LabelStyle(FontSize: 24, TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center);
+
+// Estilo para botones pequeños
+@SmallBtnStyle = TextButtonStyle(
+  Default: (Background: #444444(0.8), LabelStyle: (FontSize: 14, TextColor: #ffffff, Alignment: Center)),
+  Hovered: (Background: #666666(0.9), LabelStyle: (FontSize: 14, TextColor: #ffffff, Alignment: Center))
+);
+
+// GRUPO PRINCIPAL
+Group {
+    LayoutMode: Top;
+    Padding: (Top: 30, Left: 20, Right: 20, Bottom: 30);
+    FlexWeight: 1;
+
+    Label { Text: "AJUSTES DEL SERVIDOR"; Style: @TitleStyle; Anchor: (Height: 40); }
+    Group { Anchor: (Height: 30); }
+
+    // --- CONTENEDOR DE FILAS ---
+    Group {
+        LayoutMode: Top;
+        Anchor: (Width: 410); // Ajustado para que quepa bien en el layout maestro
+
+        // FILA 1: LÍMITE
+        Group {
+            LayoutMode: Left;
+            Anchor: (Height: 45);
+            Background: #263047;
+            Padding: (Left: 15, Right: 10);
+
+            Label { Text: "Límite de Casas"; Style: @LabelStyle; }
+
+            // EL MUELLE (Space-Between)
+            Group { FlexWeight: 1; }
+
+            // CONTROLES
+            TextButton #BtnSubMax { Text: "-"; Anchor: (Width: 30, Height: 30); Style: $C.@SmallDefaultTextButtonStyle; }
+            Label #MaxHomesLabel { Text: "0"; Style: @ValueStyle; Anchor: (Width: 40); }
+            TextButton #BtnAddMax { Text: "+"; Anchor: (Width: 30, Height: 30); Style: $C.@SmallDefaultTextButtonStyle; }
+        }
+
+        // FILA 2: DELAY TIEMPO
+        Group {
+            LayoutMode: Left;
+            Anchor: (Height: 45);
+            Background: #263047;
+            Padding: (Left: 15, Right: 10);
+
+            Label { Text: "Tiempo de Espera"; Style: @LabelStyle; }
+
+            Group { FlexWeight: 1; }
+
+            TextButton #BtnSubDelay { Text: "-"; Anchor: (Width: 30, Height: 30); Style: $C.@SmallDefaultTextButtonStyle; }
+            Label #DelayValueLabel { Text: "0s"; Style: @ValueStyle; Anchor: (Width: 40); }
+            TextButton #BtnAddDelay { Text: "+"; Anchor: (Width: 30, Height: 30); Style: $C.@SmallDefaultTextButtonStyle; }
+        }
+
+        // FILA 3: ESTADO DELAY
+        Group {
+            LayoutMode: Left;
+            Anchor: (Height: 45);
+            Background: #263047;
+            Padding: (Left: 15, Right: 10);
+
+            Label { Text: "Estado del Delay"; Style: @LabelStyle; }
+
+            Group { FlexWeight: 1; }
+
+            Label #DelayStatusLabel { Text: "OFF"; Style: @ValueStyle; Anchor: (Width: 50); }
+            TextButton #BtnToggleDelay {
+                Text: "CAMBIAR";
+                Anchor: (Width: 80, Height: 30);
+                Style: $C.@DefaultTextButtonStyle;
+            }
+        }
+    }
+}

@@ -14,23 +14,22 @@ public class DelHomeSubCommand extends AbstractCommand {
     private final RequiredArg<String> homeNameArg;
 
     public DelHomeSubCommand() {
-        super("del", "Borra una casa");
-        this.homeNameArg = withRequiredArg("nombre", "Nombre de la casa", ArgTypes.STRING);
+        super("del", "Delete a house");
+        this.homeNameArg = withRequiredArg("nombre", "House name", ArgTypes.STRING);
     }
 
     @Override
     protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
         String homeName = homeNameArg.get(context);
 
-        // Obtenemos el nombre (sea jugador o "Luis" para consola)
-        String target = (context.sender() instanceof Player) ? ((Player)context.sender()).getDisplayName() : "Luis";
+        String target = (context.sender() instanceof Player) ? ((Player)context.sender()).getDisplayName() : "Person";
 
         boolean deleted = HomeManager.getInstance().deleteHome(target, homeName);
 
         if (deleted) {
-            context.sender().sendMessage(Message.raw("§e[Manager] La casa '" + homeName + "' ha sido eliminada."));
+            context.sender().sendMessage(Message.raw("The house" + homeName + "has been removed."));
         } else {
-            context.sender().sendMessage(Message.raw("§cError: No tenías ninguna casa llamada '" + homeName + "'."));
+            context.sender().sendMessage(Message.raw("Error: You didn't have a house called" + homeName + "'."));
         }
 
         return CompletableFuture.completedFuture(null);
